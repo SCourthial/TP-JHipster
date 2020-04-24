@@ -1,0 +1,58 @@
+enum MethodPaiement {
+  CB, BITCOIN, PAYPAL, IZLY
+}
+
+enum Etat {
+  VALIDE, ENCOURS, ANNULE
+}
+
+enum Roles {
+  LIVREUR, CLIENT, RESTAURATEUR, ADMIN, SOCIETAIRE, DG
+}
+
+entity Role {
+  type Roles required
+}
+
+entity Restaurant {
+  nom String required
+  type String required
+}
+
+entity Cooperative {
+  nom String minlength(2)
+}
+
+entity Produit {
+  nom String required
+  prix BigDecimal required min(0)
+  dispo Integer required min(0)
+}
+
+entity Panier {
+  etat Etat required
+}
+
+entity Commande {
+  echeance Instant required
+}
+
+entity Paiement {
+  methode MethodPaiement required
+}
+
+relationship ManyToOne {
+  Role{user} to User
+  Commande{user} to User
+  Restaurant{user} to User
+  Commande{restaurant} to Restaurant
+  Commande{panier} to Panier
+  Commande{paiement} to Paiement
+  Produit{restaurant} to Restaurant
+}
+
+relationship ManyToMany {
+  Cooperative{user} to User
+  Cooperative{restaurant} to Restaurant{cooperative}
+  Panier{produit} to Produit{panier}
+}
